@@ -9,6 +9,16 @@ module.exports = async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
+  // 임시 진단 — 환경변수 존재 여부 확인
+  if (req.headers['x-debug'] === '1') {
+    return res.status(200).json({
+      has_supabase_url:     !!process.env.SUPABASE_URL,
+      has_service_key:      !!process.env.SUPABASE_SERVICE_KEY,
+      has_anon_key:         !!process.env.SUPABASE_ANON_KEY,
+      service_key_preview:  process.env.SUPABASE_SERVICE_KEY?.slice(0, 20) + '...',
+    });
+  }
+
   try {
     const response = await fetch(
       `${process.env.SUPABASE_URL}/rest/v1/signups?select=*&order=created_at.desc`,
