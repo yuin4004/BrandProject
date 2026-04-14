@@ -399,9 +399,7 @@
         btn.disabled = false;
         btn.textContent = '회원가입';
       } else {
-        showMsg('signup-msg', '가입 완료! 이메일을 확인해 인증 링크를 클릭해주세요. (스팸함도 확인해보세요)', 'success');
-        btn.disabled = false;
-        btn.textContent = '회원가입';
+        window.location.href = 'members.html';
       }
     }
 
