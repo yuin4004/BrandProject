@@ -71,7 +71,7 @@
       color: var(--dark);
       letter-spacing: -0.5px;
     }
-    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
     .nav-pill {
       font-size: 13px;
       color: var(--muted);
@@ -92,6 +92,39 @@
     .btn-nav:hover  { background: #1e1e2d; transform: translateY(-1px); }
     .btn-nav:focus  { outline: 3px solid var(--neon); outline-offset: 3px; }
     .btn-nav:active { transform: scale(0.97); }
+    .btn-nav-ghost {
+      background: transparent;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1.5px solid rgba(0,0,0,0.12);
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-nav-ghost:hover  { border-color: var(--ink); background: rgba(0,0,0,0.04); transform: translateY(-1px); }
+    .btn-nav-ghost:focus  { outline: 2px solid var(--ink); outline-offset: 2px; }
+    .btn-nav-ghost:active { transform: scale(0.97); }
+    /* 로그인 후: 내 챌린지 버튼 */
+    .btn-nav-member {
+      background: transparent;
+      color: var(--dark);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1.5px solid rgba(0,0,0,0.18);
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      display: none;
+    }
+    .btn-nav-member:hover  { border-color: var(--dark); background: rgba(0,0,0,0.05); transform: translateY(-1px); }
+    .btn-nav-member:focus  { outline: 2px solid var(--dark); outline-offset: 2px; }
+    .btn-nav-member:active { transform: scale(0.97); }
 
     /* ─── 히어로 ─── */
     .hero {
@@ -597,6 +630,8 @@
       </div>
       <div class="nav-right">
         <span class="nav-pill">₩19,900 · 선착순 50명</span>
+        <a href="auth.html" class="btn-nav-ghost" id="nav-login">로그인</a>
+        <a href="members.html" class="btn-nav-member" id="nav-member">내 챌린지</a>
         <a href="signup.html" class="btn-nav">지금 신청하기 →</a>
       </div>
     </nav>
@@ -826,6 +861,7 @@
     첫 런칭과 콘텐츠 구축을 위한 30일 챌린지 &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; 7일 무조건 환불 보장
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
     function faq(btn) {
       const item = btn.closest('.faq-item');
@@ -833,6 +869,19 @@
       document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
       if (!isOpen) item.classList.add('open');
     }
+
+    // 로그인 상태에 따라 네비 버튼 전환
+    (function() {
+      const SUPABASE_URL = 'https://sfuhqyxcaqyhxihehomr.supabase.co';
+      const SUPABASE_ANON_KEY = 'sb_publishable_kqW-fJD1-GS6sgQoDn02rw_ck1gN8IR';
+      const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      client.auth.getSession().then(({ data }) => {
+        if (data.session) {
+          document.getElementById('nav-login').style.display = 'none';
+          document.getElementById('nav-member').style.display = 'inline-block';
+        }
+      });
+    })();
   </script>
 </body>
 </html>

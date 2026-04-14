@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 챌린지 — 30일 챌린지</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:  #F4EFE6;
+      --neon:   #CCFF00;
+      --dark:   #0D0D12;
+      --ink:    #111111;
+      --muted:  #6A6A6A;
+      --border: #E0D9CF;
+      --white:  #FFFFFF;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--dark);
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    /* ── 헤더 ── */
+    .header {
+      background: #16161f;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-logo {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--neon);
+      letter-spacing: -0.3px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .user-email {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+    }
+    .btn-logout {
+      font-size: 13px;
+      color: rgba(255,255,255,0.3);
+      background: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 7px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-logout:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.25); }
+
+    /* ── 바디 ── */
+    .body {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 32px;
+    }
+
+    /* ── 환영 ── */
+    .welcome-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: var(--neon);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .welcome-title {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .welcome-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 48px;
+    }
+
+    /* ── 카드 그리드 ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } }
+
+    .card {
+      background: #16161f;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 28px;
+    }
+    .card-icon {
+      width: 44px; height: 44px;
+      background: rgba(204,255,0,0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.6;
+    }
+    .card-badge {
+      display: inline-block;
+      margin-top: 14px;
+      background: rgba(204,255,0,0.1);
+      color: var(--neon);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(204,255,0,0.2);
+    }
+
+    /* ── CTA ── */
+    .cta-box {
+      background: linear-gradient(135deg, rgba(204,255,0,0.07) 0%, rgba(204,255,0,0.02) 100%);
+      border: 1px solid rgba(204,255,0,0.15);
+      border-radius: 16px;
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    @media (max-width: 600px) { .cta-box { flex-direction: column; align-items: flex-start; } }
+    .cta-text .title {
+      font-size: 17px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .cta-text .desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+    }
+    .btn-cta {
+      background: var(--neon);
+      color: var(--dark);
+      font-size: 14px;
+      font-weight: 900;
+      padding: 13px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-cta:hover { background: #b8f000; transform: translateY(-1px); }
+    .btn-cta:active { transform: scale(0.98); }
+
+    /* ── 로딩 ── */
+    #loading {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: rgba(255,255,255,0.3);
+    }
+    #main-content { display: none; }
+  </style>
+</head>
+<body>
+
+  <div id="loading">불러오는 중...</div>
+
+  <div id="main-content">
+    <header class="header">
+      <div class="header-logo">30일 챌린지</div>
+      <div class="header-right">
+        <span class="user-email" id="user-email"></span>
+        <button class="btn-logout" onclick="logout()">로그아웃</button>
+      </div>
+    </header>
+
+    <div class="body">
+      <div class="welcome-label">Member Area</div>
+      <div class="welcome-title" id="welcome-title">환영합니다!</div>
+      <div class="welcome-sub">30일 챌린지에 오신 것을 환영해요.</div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">📋</div>
+          <div class="card-title">챌린지 커리큘럼</div>
+          <div class="card-desc">30일간의 콘텐츠 구축 로드맵. 단계별 액션 플랜을 확인하세요.</div>
+          <span class="card-badge">준비 중</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">📁</div>
+          <div class="card-title">자료실</div>
+          <div class="card-desc">템플릿, 체크리스트, 스와이프 파일 등 모든 자료를 한 곳에서.</div>
+          <span class="card-badge">준비 중</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">💬</div>
+          <div class="card-title">커뮤니티</div>
+          <div class="card-desc">함께 챌린지에 참여하는 멤버들과 소통하고 성과를 공유하세요.</div>
+          <span class="card-badge">준비 중</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">내 진행 현황</div>
+          <div class="card-desc">오늘의 미션 완료 여부와 전체 챌린지 진행률을 확인하세요.</div>
+          <span class="card-badge">준비 중</span>
+        </div>
+      </div>
+
+      <div class="cta-box">
+        <div class="cta-text">
+          <div class="title">아직 챌린지를 신청하지 않으셨나요?</div>
+          <div class="desc">지금 신청하고 30일 챌린지를 시작해보세요.<br>선착순 마감 전에 자리를 확보하세요.</div>
+        </div>
+        <a href="signup.html" class="btn-cta">지금 신청하기 →</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://sfuhqyxcaqyhxihehomr.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_kqW-fJD1-GS6sgQoDn02rw_ck1gN8IR';
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 세션 확인 — 로그인 안 되어 있으면 auth 페이지로
+    client.auth.getSession().then(({ data }) => {
+      if (!data.session) {
+        window.location.href = 'auth.html';
+        return;
+      }
+      const user = data.session.user;
+      const email = user.email || '';
+      document.getElementById('user-email').textContent = email;
+      document.getElementById('welcome-title').textContent =
+        email ? `${email.split('@')[0]}님, 환영합니다!` : '환영합니다!';
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+    });
+
+    async function logout() {
+      await client.auth.signOut();
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
