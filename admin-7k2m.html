@@ -57,17 +57,8 @@
       margin: 0 auto 20px;
       font-weight: 900;
     }
-    .lock-title {
-      font-size: 20px;
-      font-weight: 900;
-      margin-bottom: 6px;
-      letter-spacing: -0.3px;
-    }
-    .lock-sub {
-      font-size: 13px;
-      color: rgba(255,255,255,0.35);
-      margin-bottom: 32px;
-    }
+    .lock-title { font-size: 20px; font-weight: 900; margin-bottom: 6px; letter-spacing: -0.3px; }
+    .lock-sub   { font-size: 13px; color: rgba(255,255,255,0.35); margin-bottom: 32px; }
     .lock-input {
       width: 100%;
       background: rgba(255,255,255,0.05);
@@ -95,14 +86,9 @@
       font-family: inherit;
       transition: background 0.15s, transform 0.15s;
     }
-    .lock-btn:hover { background: #b8f000; transform: translateY(-1px); }
+    .lock-btn:hover  { background: #b8f000; transform: translateY(-1px); }
     .lock-btn:active { transform: scale(0.98); }
-    .lock-error {
-      font-size: 13px;
-      color: var(--error);
-      margin-top: 10px;
-      display: none;
-    }
+    .lock-error { font-size: 13px; color: var(--error); margin-top: 10px; display: none; }
 
     /* ── 대시보드 ── */
     #dashboard { display: none; }
@@ -115,37 +101,51 @@
       align-items: center;
       justify-content: space-between;
     }
-    .dash-logo {
-      font-size: 14px;
-      font-weight: 900;
-      color: var(--neon);
-      letter-spacing: -0.3px;
-    }
+    .dash-logo  { font-size: 14px; font-weight: 900; color: var(--neon); letter-spacing: -0.3px; }
     .dash-logout {
-      font-size: 13px;
-      color: rgba(255,255,255,0.3);
-      cursor: pointer;
-      background: none;
-      border: none;
-      font-family: inherit;
-      transition: color 0.2s;
+      font-size: 13px; color: rgba(255,255,255,0.3); cursor: pointer;
+      background: none; border: none; font-family: inherit; transition: color 0.2s;
     }
     .dash-logout:hover { color: rgba(255,255,255,0.6); }
 
-    .dash-body {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 32px;
-    }
+    .dash-body { max-width: 1100px; margin: 0 auto; padding: 40px 32px; }
 
-    /* 통계 카드 */
+    /* ── 탭 네비 ── */
+    .tab-nav {
+      display: flex;
+      gap: 4px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 36px;
+      width: fit-content;
+    }
+    .tab-btn {
+      font-size: 13px;
+      font-weight: 700;
+      padding: 9px 20px;
+      border-radius: 9px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      color: rgba(255,255,255,0.4);
+      background: transparent;
+      transition: all 0.2s;
+    }
+    .tab-btn.active { background: var(--neon); color: var(--dark); }
+
+    /* ── 탭 콘텐츠 ── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── 통계 카드 ── */
     .stats-row {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 16px;
       margin-bottom: 40px;
     }
-    @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
     .stat-card {
       background: #16161f;
       border: 1px solid rgba(255,255,255,0.07);
@@ -153,47 +153,21 @@
       padding: 24px;
     }
     .stat-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: rgba(255,255,255,0.3);
-      text-transform: uppercase;
-      margin-bottom: 10px;
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      color: rgba(255,255,255,0.3); text-transform: uppercase; margin-bottom: 10px;
     }
-    .stat-value {
-      font-size: 36px;
-      font-weight: 900;
-      color: var(--neon);
-      letter-spacing: -1px;
-      line-height: 1;
-    }
-    .stat-unit {
-      font-size: 14px;
-      color: rgba(255,255,255,0.3);
-      margin-top: 4px;
-    }
+    .stat-value { font-size: 36px; font-weight: 900; color: var(--neon); letter-spacing: -1px; line-height: 1; }
+    .stat-unit  { font-size: 14px; color: rgba(255,255,255,0.3); margin-top: 4px; }
 
-    /* 테이블 */
+    /* ── 테이블 ── */
     .table-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
     }
-    .table-title {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
+    .table-title { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
     .refresh-btn {
-      font-size: 13px;
-      color: rgba(255,255,255,0.4);
-      background: none;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 7px 14px;
-      cursor: pointer;
-      font-family: inherit;
+      font-size: 13px; color: rgba(255,255,255,0.4); background: none;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+      padding: 7px 14px; cursor: pointer; font-family: inherit;
       transition: color 0.2s, border-color 0.2s;
     }
     .refresh-btn:hover { color: var(--neon); border-color: rgba(204,255,0,0.3); }
@@ -205,59 +179,47 @@
       overflow: hidden;
       overflow-x: auto;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      min-width: 640px;
-    }
-    thead tr {
-      background: rgba(255,255,255,0.03);
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 640px; }
+    thead tr { background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.07); }
     th {
-      padding: 14px 20px;
-      text-align: left;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      color: rgba(255,255,255,0.3);
-      text-transform: uppercase;
-      white-space: nowrap;
+      padding: 14px 20px; text-align: left;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.3); text-transform: uppercase; white-space: nowrap;
     }
     td {
-      padding: 14px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.75);
-      white-space: nowrap;
+      padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.75); white-space: nowrap;
     }
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover td { background: rgba(255,255,255,0.02); }
 
     .badge-channel {
-      display: inline-block;
-      background: rgba(204,255,0,0.1);
-      color: var(--neon);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      border: 1px solid rgba(204,255,0,0.2);
+      display: inline-block; background: rgba(204,255,0,0.1); color: var(--neon);
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; border: 1px solid rgba(204,255,0,0.2);
+    }
+    .badge-confirmed {
+      display: inline-block; background: rgba(34,197,94,0.1); color: #86efac;
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; border: 1px solid rgba(34,197,94,0.2);
+    }
+    .badge-unconfirmed {
+      display: inline-block; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3);
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; border: 1px solid rgba(255,255,255,0.08);
     }
     .text-muted { color: rgba(255,255,255,0.25); }
 
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: rgba(255,255,255,0.25);
-      font-size: 14px;
+    .btn-delete {
+      font-size: 11px; color: rgba(255,68,68,0.5);
+      background: none; border: 1px solid rgba(255,68,68,0.2);
+      border-radius: 6px; padding: 4px 10px; cursor: pointer;
+      font-family: inherit; transition: color 0.2s, border-color 0.2s;
     }
-    .loading {
-      text-align: center;
-      padding: 60px 20px;
-      color: rgba(255,255,255,0.25);
-      font-size: 14px;
-    }
+    .btn-delete:hover { color: #ff6666; border-color: rgba(255,68,68,0.5); }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.25); font-size: 14px; }
+    .loading     { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.25); font-size: 14px; }
   </style>
 </head>
 <body>
@@ -284,46 +246,107 @@
 
     <div class="dash-body">
 
-      <!-- 통계 -->
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-label">총 신청</div>
-          <div class="stat-value" id="stat-total">—</div>
-          <div class="stat-unit">명</div>
+      <!-- 탭 네비 -->
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('signups')">신청 목록</button>
+        <button class="tab-btn"        onclick="switchTab('members')">회원 관리</button>
+      </div>
+
+      <!-- ── 탭 1: 신청 목록 ── -->
+      <div class="tab-content active" id="tab-signups">
+
+        <!-- 통계 -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">총 신청</div>
+            <div class="stat-value" id="stat-total">—</div>
+            <div class="stat-unit">명</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">오늘 신청</div>
+            <div class="stat-value" id="stat-today">—</div>
+            <div class="stat-unit">명</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">이번 주</div>
+            <div class="stat-value" id="stat-week">—</div>
+            <div class="stat-unit">명</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">총 회원</div>
+            <div class="stat-value" id="stat-members">—</div>
+            <div class="stat-unit">명</div>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">오늘 신청</div>
-          <div class="stat-value" id="stat-today">—</div>
-          <div class="stat-unit">명</div>
+
+        <!-- 신청 목록 테이블 -->
+        <div class="table-header">
+          <div class="table-title">신청 목록</div>
+          <button class="refresh-btn" onclick="loadSignups()">↻ 새로고침</button>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">이번 주</div>
-          <div class="stat-value" id="stat-week">—</div>
-          <div class="stat-unit">명</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>이름</th>
+                <th>이메일</th>
+                <th>연락처</th>
+                <th>채널</th>
+                <th>신청일시</th>
+              </tr>
+            </thead>
+            <tbody id="signup-body">
+              <tr><td colspan="6" class="loading">불러오는 중...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <!-- 신청 목록 -->
-      <div class="table-header">
-        <div class="table-title">신청 목록</div>
-        <button class="refresh-btn" onclick="loadData()">↻ 새로고침</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>이름</th>
-              <th>이메일</th>
-              <th>연락처</th>
-              <th>채널</th>
-              <th>신청일시</th>
-            </tr>
-          </thead>
-          <tbody id="table-body">
-            <tr><td colspan="6" class="loading">불러오는 중...</td></tr>
-          </tbody>
-        </table>
+      <!-- ── 탭 2: 회원 관리 ── -->
+      <div class="tab-content" id="tab-members">
+
+        <!-- 회원 통계 -->
+        <div class="stats-row" style="grid-template-columns: repeat(3,1fr);">
+          <div class="stat-card">
+            <div class="stat-label">총 회원</div>
+            <div class="stat-value" id="mem-total">—</div>
+            <div class="stat-unit">명</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">이메일 인증 완료</div>
+            <div class="stat-value" id="mem-confirmed">—</div>
+            <div class="stat-unit">명</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">오늘 가입</div>
+            <div class="stat-value" id="mem-today">—</div>
+            <div class="stat-unit">명</div>
+          </div>
+        </div>
+
+        <!-- 회원 목록 테이블 -->
+        <div class="table-header">
+          <div class="table-title">회원 목록</div>
+          <button class="refresh-btn" onclick="loadMembers()">↻ 새로고침</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>이메일</th>
+                <th>이메일 인증</th>
+                <th>가입일시</th>
+                <th>마지막 로그인</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="member-body">
+              <tr><td colspan="6" class="loading">불러오는 중...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
@@ -339,7 +362,6 @@
       showDashboard();
     }
 
-    // 비밀번호 입력 엔터키
     document.getElementById('pw-input').addEventListener('keydown', e => {
       if (e.key === 'Enter') login();
     });
@@ -348,7 +370,6 @@
       const pw = document.getElementById('pw-input').value;
       if (!pw) return;
 
-      // API 호출로 비밀번호 검증
       const res = await fetch('/api/admin-data', {
         headers: { 'x-admin-password': pw }
       });
@@ -364,7 +385,8 @@
       sessionStorage.setItem('admin_pw', pw);
       const data = await res.json();
       showDashboard();
-      renderData(data);
+      renderSignups(data);
+      loadMembers();
     }
 
     function logout() {
@@ -378,34 +400,41 @@
     function showDashboard() {
       document.getElementById('lock-screen').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';
-      loadData();
+      loadSignups();
+      loadMembers();
     }
 
-    async function loadData() {
-      document.getElementById('table-body').innerHTML =
+    // ── 탭 전환 ──
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', (i === 0 && tab === 'signups') || (i === 1 && tab === 'members'));
+      });
+      document.getElementById('tab-signups').classList.toggle('active', tab === 'signups');
+      document.getElementById('tab-members').classList.toggle('active', tab === 'members');
+    }
+
+    // ── 신청 목록 ──
+    async function loadSignups() {
+      document.getElementById('signup-body').innerHTML =
         '<tr><td colspan="6" class="loading">불러오는 중...</td></tr>';
 
       const res = await fetch('/api/admin-data', {
         headers: { 'x-admin-password': adminPassword }
       });
-
       if (!res.ok) {
-        document.getElementById('table-body').innerHTML =
+        document.getElementById('signup-body').innerHTML =
           '<tr><td colspan="6" class="empty-state">데이터를 불러오지 못했습니다.</td></tr>';
         return;
       }
-
-      const data = await res.json();
-      renderData(data);
+      renderSignups(await res.json());
     }
 
-    function renderData(data) {
-      // 통계 계산
-      const now   = new Date();
-      const today = now.toISOString().slice(0, 10);
+    function renderSignups(data) {
+      const now     = new Date();
+      const today   = now.toISOString().slice(0, 10);
       const weekAgo = new Date(now - 7 * 86400000).toISOString();
 
-      const total = data.length;
+      const total      = data.length;
       const todayCount = data.filter(r => r.created_at?.startsWith(today)).length;
       const weekCount  = data.filter(r => r.created_at > weekAgo).length;
 
@@ -413,21 +442,19 @@
       document.getElementById('stat-today').textContent = todayCount;
       document.getElementById('stat-week').textContent  = weekCount;
 
-      // 테이블 렌더링
       if (total === 0) {
-        document.getElementById('table-body').innerHTML =
+        document.getElementById('signup-body').innerHTML =
           '<tr><td colspan="6" class="empty-state">아직 신청이 없습니다.</td></tr>';
         return;
       }
 
-      const rows = data.map((r, i) => {
+      document.getElementById('signup-body').innerHTML = data.map((r, i) => {
         const dt = r.created_at
           ? new Date(r.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
           : '—';
         const channel = r.channel
           ? `<span class="badge-channel">${r.channel}</span>`
           : '<span class="text-muted">미입력</span>';
-
         return `
           <tr>
             <td class="text-muted">${total - i}</td>
@@ -436,11 +463,93 @@
             <td>${r.phone || '<span class="text-muted">미입력</span>'}</td>
             <td>${channel}</td>
             <td class="text-muted">${dt}</td>
-          </tr>
-        `;
+          </tr>`;
       }).join('');
+    }
 
-      document.getElementById('table-body').innerHTML = rows;
+    // ── 회원 목록 ──
+    async function loadMembers() {
+      document.getElementById('member-body').innerHTML =
+        '<tr><td colspan="6" class="loading">불러오는 중...</td></tr>';
+
+      const res = await fetch('/api/admin-users', {
+        headers: { 'x-admin-password': adminPassword }
+      });
+      if (!res.ok) {
+        document.getElementById('member-body').innerHTML =
+          '<tr><td colspan="6" class="empty-state">데이터를 불러오지 못했습니다.</td></tr>';
+        return;
+      }
+      renderMembers(await res.json());
+    }
+
+    function renderMembers(data) {
+      const now   = new Date();
+      const today = now.toISOString().slice(0, 10);
+
+      const total     = data.length;
+      const confirmed = data.filter(u => !!u.email_confirmed_at).length;
+      const todayNew  = data.filter(u => u.created_at?.startsWith(today)).length;
+
+      document.getElementById('mem-total').textContent     = total;
+      document.getElementById('mem-confirmed').textContent = confirmed;
+      document.getElementById('mem-today').textContent     = todayNew;
+      document.getElementById('stat-members').textContent  = total;
+
+      if (total === 0) {
+        document.getElementById('member-body').innerHTML =
+          '<tr><td colspan="6" class="empty-state">가입한 회원이 없습니다.</td></tr>';
+        return;
+      }
+
+      // 최신순 정렬
+      const sorted = [...data].sort((a, b) =>
+        new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      document.getElementById('member-body').innerHTML = sorted.map((u, i) => {
+        const createdAt    = u.created_at
+          ? new Date(u.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+          : '—';
+        const lastSignIn   = u.last_sign_in_at
+          ? new Date(u.last_sign_in_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+          : '<span class="text-muted">없음</span>';
+        const emailBadge   = u.email_confirmed_at
+          ? '<span class="badge-confirmed">인증 완료</span>'
+          : '<span class="badge-unconfirmed">미인증</span>';
+
+        return `
+          <tr>
+            <td class="text-muted">${total - i}</td>
+            <td style="font-weight:700;color:#fff;">${u.email || '—'}</td>
+            <td>${emailBadge}</td>
+            <td class="text-muted">${createdAt}</td>
+            <td class="text-muted">${lastSignIn}</td>
+            <td>
+              <button class="btn-delete" onclick="deleteUser('${u.id}', '${u.email}')">삭제</button>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    // ── 회원 삭제 ──
+    async function deleteUser(userId, email) {
+      if (!confirm(`"${email}" 계정을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+
+      const res = await fetch('/api/admin-users', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type':      'application/json',
+          'x-admin-password':  adminPassword,
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (res.ok) {
+        loadMembers();
+      } else {
+        alert('삭제에 실패했습니다. 다시 시도해주세요.');
+      }
     }
   </script>
 </body>
