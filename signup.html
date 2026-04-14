@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>신청하기 — 30일 챌린지</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:  #F4EFE6;
+      --neon:   #CCFF00;
+      --dark:   #0D0D12;
+      --ink:    #111111;
+      --muted:  #6A6A6A;
+      --white:  #FFFFFF;
+      --border: #E0D9CF;
+      --error:  #FF4444;
+      --success:#22C55E;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+
+    /* ── 헤더 ── */
+    header {
+      background: var(--dark);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-wrap img { height: 30px; }
+    .logo-fallback {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--neon);
+      letter-spacing: -0.5px;
+    }
+    .header-back {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .header-back:hover { color: rgba(255,255,255,0.7); }
+
+    /* ── 본문 레이아웃 ── */
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 700px) {
+      .page { grid-template-columns: 1fr; padding: 32px 20px 64px; }
+      .order-summary { order: -1; }
+    }
+
+    /* ── 주문 요약 (왼쪽) ── */
+    .order-summary {
+      background: var(--dark);
+      border-radius: 20px;
+      padding: 36px 32px;
+      color: var(--white);
+      position: sticky;
+      top: 24px;
+    }
+    .summary-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .summary-product {
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+      margin-bottom: 24px;
+    }
+    .summary-price {
+      font-size: 44px;
+      font-weight: 900;
+      color: var(--neon);
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .summary-price-note {
+      font-size: 13px;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 28px;
+    }
+    .summary-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      margin: 20px 0;
+    }
+    .summary-item-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.25);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .summary-line {
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .summary-line::before {
+      content: '—';
+      color: var(--neon);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .summary-guarantee {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(204,255,0,0.07);
+      border: 1px solid rgba(204,255,0,0.15);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--neon);
+      margin-top: 20px;
+    }
+    .summary-guarantee-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    /* ── 신청 폼 (오른쪽) ── */
+    .form-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 40px 36px;
+      border: 1px solid var(--border);
+    }
+    @media (max-width: 480px) { .form-card { padding: 28px 20px; } }
+
+    .form-title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+    .form-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    /* 단계 진행바 */
+    .step-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 28px;
+    }
+    .step-seg {
+      height: 3px;
+      border-radius: 2px;
+      flex: 1;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    .step-seg.active { background: var(--ink); }
+    .step-seg.done   { background: var(--neon); }
+
+    /* 필드 */
+    .field { margin-bottom: 20px; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 7px;
+      letter-spacing: 0.2px;
+    }
+    .field input,
+    .field select {
+      width: 100%;
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+    }
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--ink);
+      box-shadow: 0 0 0 3px rgba(17,17,17,0.08);
+    }
+    .field input.error { border-color: var(--error); }
+    .field input.valid { border-color: var(--success); }
+    .field-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+    .field-error {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 5px;
+      display: none;
+    }
+    .field input.error + .field-error { display: block; }
+
+    /* 동의 체크박스 */
+    .agree-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      cursor: pointer;
+    }
+    .agree-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      background: var(--cream);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 1px;
+      accent-color: var(--ink);
+    }
+    .agree-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .agree-text a { color: var(--ink); text-decoration: underline; }
+
+    /* 제출 버튼 */
+    .btn-submit {
+      width: 100%;
+      background: var(--ink);
+      color: var(--neon);
+      font-size: 16px;
+      font-weight: 900;
+      padding: 17px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: -0.2px;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-submit:hover { background: #222; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .btn-submit:focus { outline: 3px solid var(--ink); outline-offset: 3px; }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .form-security {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 14px;
+    }
+
+    /* ── 완료 화면 ── */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 0;
+    }
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--neon);
+      color: var(--dark);
+      border-radius: 50%;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-weight: 900;
+    }
+    .success-title { font-size: 22px; font-weight: 900; margin-bottom: 10px; }
+    .success-desc { font-size: 15px; color: var(--muted); line-height: 1.8; }
+
+    /* ── 신뢰 라디오 ── */
+    .trust-section {
+      margin-top: 32px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }
+    .trust-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .trust-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .trust-radio-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--cream);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .trust-radio-label:hover {
+      border-color: #bbb;
+      transform: translateX(2px);
+    }
+    .trust-radio-label.selected {
+      border-color: var(--ink);
+      background: var(--white);
+    }
+    /* 왼쪽 네온 바 */
+    .trust-radio-label::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--neon);
+      transform: scaleY(0);
+      transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+      border-radius: 0 2px 2px 0;
+    }
+    .trust-radio-label.selected::before { transform: scaleY(1); }
+
+    /* 실제 라디오 숨김 */
+    .trust-radio-label input[type="radio"] { display: none; }
+
+    /* 커스텀 라디오 원 */
+    .trust-radio-circle {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .trust-radio-label.selected .trust-radio-circle {
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+    .trust-radio-dot {
+      width: 8px; height: 8px;
+      background: var(--neon);
+      border-radius: 50%;
+      opacity: 0;
+      transform: scale(0);
+      transition: opacity 0.2s, transform 0.2s cubic-bezier(.34,1.56,.64,1);
+    }
+    .trust-radio-label.selected .trust-radio-dot {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .trust-radio-body { flex: 1; }
+    .trust-radio-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 0;
+      transition: color 0.2s;
+    }
+    /* 상세 설명 — 선택 시 슬라이드 다운 */
+    .trust-radio-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.25s ease, margin-top 0.25s ease;
+      margin-top: 0;
+    }
+    .trust-radio-label.selected .trust-radio-desc {
+      max-height: 60px;
+      opacity: 1;
+      margin-top: 4px;
+    }
+
+    /* ── 푸터 ── */
+    footer {
+      background: var(--dark);
+      padding: 24px 32px;
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 -->
+  <header>
+    <div class="logo-wrap">
+      <img src="./brand_logo/logo.png" alt="로고"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <span class="logo-fallback" style="display:none;">30일 챌린지</span>
+    </div>
+    <a href="index.html" class="header-back">← 랜딩페이지로 돌아가기</a>
+  </header>
+
+  <!-- 본문 -->
+  <div class="page">
+
+    <!-- 왼쪽: 주문 요약 -->
+    <div class="order-summary">
+      <div class="summary-label">주문 요약</div>
+      <div class="summary-product">첫 런칭과 콘텐츠 구축을 위한<br>30일 챌린지</div>
+      <div class="summary-price">19,900</div>
+      <div class="summary-price-note">원 · 단 한 번 결제 · 평생 소장</div>
+
+      <hr class="summary-divider">
+      <div class="summary-item-label">포함 내용</div>
+      <div class="summary-line">30일 챌린지 전체 커리큘럼</div>
+      <div class="summary-line">실전 템플릿 &amp; 워크시트 패키지</div>
+      <div class="summary-line">콘텐츠 아이디어 뱅크 시트</div>
+      <div class="summary-line">첫 유료 상품 기획 워크북</div>
+      <div class="summary-line">첫 런칭 실행 체크리스트</div>
+
+      <div class="summary-guarantee">
+        <span class="summary-guarantee-icon">🛡️</span>
+        <span>7일 무조건 환불 보장 — 이유 묻지 않음</span>
+      </div>
+    </div>
+
+    <!-- 오른쪽: 신청 폼 -->
+    <div class="form-card">
+
+      <!-- 기본 화면 -->
+      <div id="form-screen">
+        <div class="form-title">신청 정보 입력</div>
+        <p class="form-sub">결제 완료 후 입력하신 이메일로 자료가 즉시 전달됩니다.</p>
+
+        <!-- 진행바 -->
+        <div class="step-bar">
+          <div class="step-seg done" id="seg1"></div>
+          <div class="step-seg active" id="seg2"></div>
+          <div class="step-seg" id="seg3"></div>
+        </div>
+
+        <form id="signup-form" novalidate>
+          <div class="field">
+            <label for="name">이름 <span style="color:#FF4444">*</span></label>
+            <input type="text" id="name" name="name" placeholder="홍길동" autocomplete="name">
+            <div class="field-error">이름을 입력해주세요.</div>
+          </div>
+
+          <div class="field">
+            <label for="email">이메일 <span style="color:#FF4444">*</span></label>
+            <input type="email" id="email" name="email" placeholder="hello@example.com" autocomplete="email">
+            <div class="field-hint">자료가 이 이메일로 전달됩니다.</div>
+            <div class="field-error">올바른 이메일 주소를 입력해주세요.</div>
+          </div>
+
+          <div class="field">
+            <label for="phone">연락처 (선택)</label>
+            <input type="tel" id="phone" name="phone" placeholder="010-0000-0000" autocomplete="tel">
+          </div>
+
+          <div class="field">
+            <label for="channel">주로 사용하는 채널</label>
+            <select id="channel" name="channel">
+              <option value="" disabled selected>선택해주세요</option>
+              <option>인스타그램</option>
+              <option>유튜브</option>
+              <option>블로그/브런치</option>
+              <option>뉴스레터</option>
+              <option>아직 없어요</option>
+              <option>기타</option>
+            </select>
+          </div>
+
+          <label class="agree-row" for="agree">
+            <input type="checkbox" id="agree" name="agree">
+            <span class="agree-text">
+              개인정보 수집·이용에 동의합니다.
+              수집 항목: 이름, 이메일, 연락처 / 목적: 자료 전달 및 안내 / 보유: 6개월
+            </span>
+          </label>
+
+          <button type="submit" class="btn-submit" id="submit-btn">
+            <span id="btn-text">신청 완료하기 →</span>
+          </button>
+
+          <div class="form-security">
+            🔒 입력하신 정보는 암호화되어 안전하게 처리됩니다
+          </div>
+
+          <div class="trust-section">
+            <div class="trust-label">구매 혜택 확인하기</div>
+            <div class="trust-options">
+
+              <label class="trust-radio-label selected" id="trust-refund">
+                <input type="radio" name="trust" value="refund" checked>
+                <div class="trust-radio-circle">
+                  <div class="trust-radio-dot"></div>
+                </div>
+                <div class="trust-radio-body">
+                  <div class="trust-radio-title">7일 환불 보장</div>
+                  <div class="trust-radio-desc">마음에 들지 않으면 7일 이내 전액 환불해 드립니다. 이유는 묻지 않습니다.</div>
+                </div>
+              </label>
+
+              <label class="trust-radio-label" id="trust-instant">
+                <input type="radio" name="trust" value="instant">
+                <div class="trust-radio-circle">
+                  <div class="trust-radio-dot"></div>
+                </div>
+                <div class="trust-radio-body">
+                  <div class="trust-radio-title">즉시 자료 전달</div>
+                  <div class="trust-radio-desc">신청 완료 즉시 입력하신 이메일로 전체 자료가 전달됩니다.</div>
+                </div>
+              </label>
+
+              <label class="trust-radio-label" id="trust-lifetime">
+                <input type="radio" name="trust" value="lifetime">
+                <div class="trust-radio-circle">
+                  <div class="trust-radio-dot"></div>
+                </div>
+                <div class="trust-radio-body">
+                  <div class="trust-radio-title">평생 소장</div>
+                  <div class="trust-radio-desc">한 번 구매하면 업데이트 내용 포함 영구적으로 소장할 수 있습니다.</div>
+                </div>
+              </label>
+
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- 완료 화면 -->
+      <div class="success-screen" id="success-screen">
+        <div class="success-icon">✓</div>
+        <div class="success-title">신청이 완료되었습니다!</div>
+        <p class="success-desc">
+          입력하신 이메일로 자료가 곧 전달됩니다.<br>
+          스팸함도 꼭 확인해주세요 :)<br><br>
+          <strong>오늘부터 30일, 함께 시작해봐요.</strong>
+        </p>
+        <div style="margin-top:28px;">
+          <a href="index.html" style="font-size:14px; color:var(--muted); text-decoration:underline;">← 랜딩페이지로 돌아가기</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 푸터 -->
+  <footer>
+    30일 챌린지 &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; 7일 무조건 환불 보장 &nbsp;·&nbsp; 결제 즉시 자료 전달
+  </footer>
+
+  <script>
+    const form     = document.getElementById('signup-form');
+    const nameEl   = document.getElementById('name');
+    const emailEl  = document.getElementById('email');
+    const agreeEl  = document.getElementById('agree');
+    const submitBtn= document.getElementById('submit-btn');
+    const btnText  = document.getElementById('btn-text');
+
+    // 신뢰 라디오 버튼 이벤트
+    document.querySelectorAll('.trust-radio-label').forEach(label => {
+      label.addEventListener('click', () => {
+        // 전체 선택 해제
+        document.querySelectorAll('.trust-radio-label').forEach(l => l.classList.remove('selected'));
+        // 현재 항목 선택
+        label.classList.add('selected');
+        label.querySelector('input[type="radio"]').checked = true;
+
+        // 주문 요약 하이라이트 연동
+        const val = label.querySelector('input').value;
+        const iconMap = { refund: '🛡️', instant: '⚡', lifetime: '♾️' };
+        const msgMap  = {
+          refund:   '7일 무조건 환불 보장 — 이유 묻지 않음',
+          instant:  '결제 즉시 자료 전달 — 지금 바로 시작',
+          lifetime: '평생 소장 — 업데이트도 무료',
+        };
+        const guar = document.querySelector('.summary-guarantee');
+        if (guar) {
+          guar.querySelector('.summary-guarantee-icon').textContent = iconMap[val];
+          guar.querySelector('span:last-child').textContent = msgMap[val];
+          // 깜빡임 애니메이션
+          guar.style.transition = 'opacity 0.15s';
+          guar.style.opacity = '0';
+          setTimeout(() => { guar.style.opacity = '1'; }, 150);
+        }
+      });
+
+      // 키보드 접근성
+      label.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); label.click(); }
+      });
+      label.setAttribute('tabindex', '0');
+    });
+
+    // 실시간 유효성 검사
+    nameEl.addEventListener('blur', () => validateName());
+    emailEl.addEventListener('blur', () => validateEmail());
+    nameEl.addEventListener('input', () => { if (nameEl.classList.contains('error')) validateName(); });
+    emailEl.addEventListener('input', () => { if (emailEl.classList.contains('error')) validateEmail(); updateProgress(); });
+
+    function validateName() {
+      const ok = nameEl.value.trim().length >= 2;
+      nameEl.classList.toggle('error', !ok);
+      nameEl.classList.toggle('valid', ok);
+      return ok;
+    }
+    function validateEmail() {
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim());
+      emailEl.classList.toggle('error', !ok);
+      emailEl.classList.toggle('valid', ok);
+      return ok;
+    }
+
+    // 진행바 업데이트
+    function updateProgress() {
+      const s1 = document.getElementById('seg1');
+      const s2 = document.getElementById('seg2');
+      const s3 = document.getElementById('seg3');
+      const hasName  = nameEl.value.trim().length >= 2;
+      const hasEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim());
+      const hasAgree = agreeEl.checked;
+      s1.className = 'step-seg done';
+      s2.className = 'step-seg ' + (hasName && hasEmail ? 'done' : 'active');
+      s3.className = 'step-seg ' + (hasName && hasEmail && hasAgree ? 'done' : (hasName && hasEmail ? 'active' : ''));
+    }
+    nameEl.addEventListener('input', updateProgress);
+    emailEl.addEventListener('input', updateProgress);
+    agreeEl.addEventListener('change', updateProgress);
+
+    // 폼 제출 → /api/submit (Supabase 저장 + Resend 이메일)
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nameOk  = validateName();
+      const emailOk = validateEmail();
+      if (!nameOk || !emailOk) return;
+      if (!agreeEl.checked) {
+        alert('개인정보 수집·이용에 동의해주세요.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      btnText.textContent = '처리 중...';
+
+      try {
+        const res = await fetch('/api/submit', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name:    nameEl.value.trim(),
+            email:   emailEl.value.trim(),
+            phone:   document.getElementById('phone').value.trim() || null,
+            channel: document.getElementById('channel').value || null,
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error(`서버 오류 ${res.status}`);
+        }
+      } catch (err) {
+        console.error('제출 오류:', err);
+        btnText.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+        submitBtn.disabled = false;
+        return;
+      }
+
+      // 완료 화면 전환
+      document.getElementById('form-screen').style.display = 'none';
+      document.getElementById('success-screen').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
