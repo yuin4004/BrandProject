@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관리자 — 30일 챌린지</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:  #F4EFE6;
+      --neon:   #CCFF00;
+      --dark:   #0D0D12;
+      --ink:    #111111;
+      --muted:  #6A6A6A;
+      --border: #E0D9CF;
+      --white:  #FFFFFF;
+      --error:  #FF4444;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--dark);
+      color: var(--white);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── 비밀번호 화면 ── */
+    #lock-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .lock-card {
+      background: #16161f;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .lock-icon {
+      width: 52px; height: 52px;
+      background: var(--neon);
+      color: var(--dark);
+      border-radius: 12px;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-weight: 900;
+    }
+    .lock-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .lock-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 32px;
+    }
+    .lock-input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--white);
+      outline: none;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+    .lock-input:focus { border-color: var(--neon); }
+    .lock-btn {
+      width: 100%;
+      background: var(--neon);
+      color: var(--dark);
+      font-size: 15px;
+      font-weight: 900;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .lock-btn:hover { background: #b8f000; transform: translateY(-1px); }
+    .lock-btn:active { transform: scale(0.98); }
+    .lock-error {
+      font-size: 13px;
+      color: var(--error);
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* ── 대시보드 ── */
+    #dashboard { display: none; }
+
+    .dash-header {
+      background: #16161f;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dash-logo {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--neon);
+      letter-spacing: -0.3px;
+    }
+    .dash-logout {
+      font-size: 13px;
+      color: rgba(255,255,255,0.3);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      transition: color 0.2s;
+    }
+    .dash-logout:hover { color: rgba(255,255,255,0.6); }
+
+    .dash-body {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+
+    /* 통계 카드 */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr; } }
+    .stat-card {
+      background: #16161f;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .stat-value {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--neon);
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+    .stat-unit {
+      font-size: 14px;
+      color: rgba(255,255,255,0.3);
+      margin-top: 4px;
+    }
+
+    /* 테이블 */
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .table-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .refresh-btn {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      background: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .refresh-btn:hover { color: var(--neon); border-color: rgba(204,255,0,0.3); }
+
+    .table-wrap {
+      background: #16161f;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      overflow: hidden;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 640px;
+    }
+    thead tr {
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    th {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.75);
+      white-space: nowrap;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .badge-channel {
+      display: inline-block;
+      background: rgba(204,255,0,0.1);
+      color: var(--neon);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(204,255,0,0.2);
+    }
+    .text-muted { color: rgba(255,255,255,0.25); }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,0.25);
+      font-size: 14px;
+    }
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,0.25);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 비밀번호 화면 -->
+  <div id="lock-screen">
+    <div class="lock-card">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-title">관리자 로그인</div>
+      <div class="lock-sub">30일 챌린지 신청 관리</div>
+      <input type="password" id="pw-input" class="lock-input"
+        placeholder="비밀번호 입력" autocomplete="current-password">
+      <button class="lock-btn" onclick="login()">접속하기</button>
+      <div class="lock-error" id="lock-error">비밀번호가 올바르지 않습니다.</div>
+    </div>
+  </div>
+
+  <!-- 대시보드 -->
+  <div id="dashboard">
+    <header class="dash-header">
+      <div class="dash-logo">30일 챌린지 — 관리자</div>
+      <button class="dash-logout" onclick="logout()">로그아웃</button>
+    </header>
+
+    <div class="dash-body">
+
+      <!-- 통계 -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">총 신청</div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-unit">명</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">오늘 신청</div>
+          <div class="stat-value" id="stat-today">—</div>
+          <div class="stat-unit">명</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">이번 주</div>
+          <div class="stat-value" id="stat-week">—</div>
+          <div class="stat-unit">명</div>
+        </div>
+      </div>
+
+      <!-- 신청 목록 -->
+      <div class="table-header">
+        <div class="table-title">신청 목록</div>
+        <button class="refresh-btn" onclick="loadData()">↻ 새로고침</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>이름</th>
+              <th>이메일</th>
+              <th>연락처</th>
+              <th>채널</th>
+              <th>신청일시</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <tr><td colspan="6" class="loading">불러오는 중...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let adminPassword = '';
+
+    // 세션 복원
+    const saved = sessionStorage.getItem('admin_pw');
+    if (saved) {
+      adminPassword = saved;
+      showDashboard();
+    }
+
+    // 비밀번호 입력 엔터키
+    document.getElementById('pw-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') login();
+    });
+
+    async function login() {
+      const pw = document.getElementById('pw-input').value;
+      if (!pw) return;
+
+      // API 호출로 비밀번호 검증
+      const res = await fetch('/api/admin-data', {
+        headers: { 'x-admin-password': pw }
+      });
+
+      if (res.status === 401) {
+        document.getElementById('lock-error').style.display = 'block';
+        document.getElementById('pw-input').value = '';
+        document.getElementById('pw-input').focus();
+        return;
+      }
+
+      adminPassword = pw;
+      sessionStorage.setItem('admin_pw', pw);
+      const data = await res.json();
+      showDashboard();
+      renderData(data);
+    }
+
+    function logout() {
+      sessionStorage.removeItem('admin_pw');
+      adminPassword = '';
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('lock-screen').style.display = 'flex';
+      document.getElementById('pw-input').value = '';
+    }
+
+    function showDashboard() {
+      document.getElementById('lock-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadData();
+    }
+
+    async function loadData() {
+      document.getElementById('table-body').innerHTML =
+        '<tr><td colspan="6" class="loading">불러오는 중...</td></tr>';
+
+      const res = await fetch('/api/admin-data', {
+        headers: { 'x-admin-password': adminPassword }
+      });
+
+      if (!res.ok) {
+        document.getElementById('table-body').innerHTML =
+          '<tr><td colspan="6" class="empty-state">데이터를 불러오지 못했습니다.</td></tr>';
+        return;
+      }
+
+      const data = await res.json();
+      renderData(data);
+    }
+
+    function renderData(data) {
+      // 통계 계산
+      const now   = new Date();
+      const today = now.toISOString().slice(0, 10);
+      const weekAgo = new Date(now - 7 * 86400000).toISOString();
+
+      const total = data.length;
+      const todayCount = data.filter(r => r.created_at?.startsWith(today)).length;
+      const weekCount  = data.filter(r => r.created_at > weekAgo).length;
+
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-today').textContent = todayCount;
+      document.getElementById('stat-week').textContent  = weekCount;
+
+      // 테이블 렌더링
+      if (total === 0) {
+        document.getElementById('table-body').innerHTML =
+          '<tr><td colspan="6" class="empty-state">아직 신청이 없습니다.</td></tr>';
+        return;
+      }
+
+      const rows = data.map((r, i) => {
+        const dt = r.created_at
+          ? new Date(r.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+          : '—';
+        const channel = r.channel
+          ? `<span class="badge-channel">${r.channel}</span>`
+          : '<span class="text-muted">미입력</span>';
+
+        return `
+          <tr>
+            <td class="text-muted">${total - i}</td>
+            <td style="font-weight:700;color:#fff;">${r.name || '—'}</td>
+            <td>${r.email || '—'}</td>
+            <td>${r.phone || '<span class="text-muted">미입력</span>'}</td>
+            <td>${channel}</td>
+            <td class="text-muted">${dt}</td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('table-body').innerHTML = rows;
+    }
+  </script>
+</body>
+</html>
