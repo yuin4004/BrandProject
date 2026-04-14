@@ -9,13 +9,15 @@ module.exports = async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  // 임시 진단 — 환경변수 존재 여부 확인
+  // 임시 진단
   if (req.headers['x-debug'] === '1') {
+    const key = process.env.SUPABASE_SERVICE_KEY || '';
     return res.status(200).json({
-      has_supabase_url:     !!process.env.SUPABASE_URL,
-      has_service_key:      !!process.env.SUPABASE_SERVICE_KEY,
-      has_anon_key:         !!process.env.SUPABASE_ANON_KEY,
-      service_key_preview:  process.env.SUPABASE_SERVICE_KEY?.slice(0, 20) + '...',
+      key_length:   key.length,
+      key_start:    key.slice(0, 30),
+      key_end:      key.slice(-30),
+      has_newline:  key.includes('\n'),
+      has_space:    key.includes(' '),
     });
   }
 
