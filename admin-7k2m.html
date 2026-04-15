@@ -245,16 +245,18 @@
 </head>
 <body>
 
-  <!-- 비밀번호 화면 -->
+  <!-- 로그인 화면 -->
   <div id="lock-screen">
     <div class="lock-card">
       <div class="lock-icon">🔒</div>
       <div class="lock-title">관리자 로그인</div>
-      <div class="lock-sub">30일 챌린지 신청 관리</div>
+      <div class="lock-sub">관리자 계정만 접속 가능합니다</div>
+      <input type="email" id="email-input" class="lock-input"
+        placeholder="이메일" autocomplete="email">
       <input type="password" id="pw-input" class="lock-input"
-        placeholder="비밀번호 입력" autocomplete="current-password">
+        placeholder="비밀번호" autocomplete="current-password">
       <button class="lock-btn" onclick="login()">접속하기</button>
-      <div class="lock-error" id="lock-error">비밀번호가 올바르지 않습니다.</div>
+      <div class="lock-error" id="lock-error">이메일 또는 비밀번호가 올바르지 않습니다.</div>
     </div>
   </div>
 
@@ -374,49 +376,78 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
-    let adminPassword = '';
+    const SUPABASE_URL      = 'https://sfuhqyxcaqyhxihehomr.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_kqW-fJD1-GS6sgQoDn02rw_ck1gN8IR';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // 세션 복원
-    const saved = sessionStorage.getItem('admin_pw');
-    if (saved) {
-      adminPassword = saved;
-      showDashboard();
-    }
+    let accessToken = '';
 
-    document.getElementById('pw-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') login();
+    // 페이지 진입 시 기존 세션 확인
+    (async () => {
+      const { data } = await sb.auth.getSession();
+      if (data.session) {
+        const role = data.session.user?.user_metadata?.role;
+        if (role === 'admin' || role === 'super_admin') {
+          accessToken = data.session.access_token;
+          showDashboard();
+        } else {
+          alert('접근 권한이 없습니다. 관리자 계정으로 로그인해주세요.');
+          await sb.auth.signOut();
+          window.location.href = 'index.html';
+        }
+      }
+    })();
+
+    // Enter 키로 로그인
+    ['email-input', 'pw-input'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') login();
+      });
     });
 
     async function login() {
-      const pw = document.getElementById('pw-input').value;
-      if (!pw) return;
+      const email = document.getElementById('email-input').value.trim();
+      const pw    = document.getElementById('pw-input').value;
+      if (!email || !pw) return;
 
-      const res = await fetch('/api/admin-data', {
-        headers: { 'x-admin-password': pw }
-      });
+      const errEl = document.getElementById('lock-error');
+      errEl.style.display = 'none';
 
-      if (res.status === 401) {
-        document.getElementById('lock-error').style.display = 'block';
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+
+      if (error || !data.session) {
+        errEl.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
+        errEl.style.display = 'block';
         document.getElementById('pw-input').value = '';
         document.getElementById('pw-input').focus();
         return;
       }
 
-      adminPassword = pw;
-      sessionStorage.setItem('admin_pw', pw);
-      const data = await res.json();
+      const role = data.session.user?.user_metadata?.role;
+      if (role !== 'admin' && role !== 'super_admin') {
+        alert('접근 권한이 없습니다. 메인 페이지로 이동합니다.');
+        await sb.auth.signOut();
+        window.location.href = 'index.html';
+        return;
+      }
+
+      accessToken = data.session.access_token;
       showDashboard();
-      renderSignups(data);
-      loadMembers();
     }
 
-    function logout() {
-      sessionStorage.removeItem('admin_pw');
-      adminPassword = '';
+    async function logout() {
+      await sb.auth.signOut();
+      accessToken = '';
       document.getElementById('dashboard').style.display = 'none';
       document.getElementById('lock-screen').style.display = 'flex';
+      document.getElementById('email-input').value = '';
       document.getElementById('pw-input').value = '';
+    }
+
+    function authHeaders(extra = {}) {
+      return { 'Authorization': `Bearer ${accessToken}`, ...extra };
     }
 
     function showDashboard() {
@@ -440,9 +471,7 @@
       document.getElementById('signup-body').innerHTML =
         '<tr><td colspan="6" class="loading">불러오는 중...</td></tr>';
 
-      const res = await fetch('/api/admin-data', {
-        headers: { 'x-admin-password': adminPassword }
-      });
+      const res = await fetch('/api/admin-data', { headers: authHeaders() });
       if (!res.ok) {
         document.getElementById('signup-body').innerHTML =
           '<tr><td colspan="6" class="empty-state">데이터를 불러오지 못했습니다.</td></tr>';
@@ -501,9 +530,7 @@
       document.getElementById('member-body').innerHTML =
         '<tr><td colspan="7" class="loading">불러오는 중...</td></tr>';
 
-      const res = await fetch('/api/admin-users', {
-        headers: { 'x-admin-password': adminPassword }
-      });
+      const res = await fetch('/api/admin-users', { headers: authHeaders() });
       if (!res.ok) {
         document.getElementById('member-body').innerHTML =
           '<tr><td colspan="7" class="empty-state">데이터를 불러오지 못했습니다.</td></tr>';
@@ -581,10 +608,7 @@
 
       const res = await fetch('/api/admin-users', {
         method: 'PATCH',
-        headers: {
-          'Content-Type':     'application/json',
-          'x-admin-password': adminPassword,
-        },
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ userId, role: newRole }),
       });
 
@@ -602,10 +626,7 @@
 
       const res = await fetch('/api/admin-users', {
         method: 'DELETE',
-        headers: {
-          'Content-Type':      'application/json',
-          'x-admin-password':  adminPassword,
-        },
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ userId }),
       });
 

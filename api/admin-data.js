@@ -3,20 +3,34 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // 비밀번호 확인
-  const password = req.headers['x-admin-password'];
-  if (!password || password !== process.env.ADMIN_PASSWORD) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SERVICE_KEY  = process.env.SUPABASE_SERVICE_KEY;
 
+  // Bearer 토큰으로 사용자 확인 및 역할 검증
+  const auth = req.headers['authorization'] || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
-try {
+  try {
+    const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        'apikey':        SERVICE_KEY,
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (!userRes.ok) return res.status(401).json({ error: 'Unauthorized' });
+    const user = await userRes.json();
+    const role = user?.user_metadata?.role;
+    if (role !== 'admin' && role !== 'super_admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
     const response = await fetch(
-      `${process.env.SUPABASE_URL}/rest/v1/signups?select=*&order=created_at.desc`,
+      `${SUPABASE_URL}/rest/v1/signups?select=*&order=created_at.desc`,
       {
         headers: {
-          'apikey':        process.env.SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+          'apikey':        SERVICE_KEY,
+          'Authorization': `Bearer ${SERVICE_KEY}`,
         },
       }
     );
