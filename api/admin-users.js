@@ -9,6 +9,33 @@ module.exports = async function handler(req, res) {
   const SERVICE_KEY  = process.env.SUPABASE_SERVICE_KEY;
 
   try {
+    // 권한 변경 (PATCH)
+    if (req.method === 'PATCH') {
+      const { userId, role } = req.body || {};
+      const allowed = ['user', 'admin', 'super_admin'];
+      if (!userId || !allowed.includes(role)) {
+        return res.status(400).json({ error: 'userId, role(user|admin|super_admin) required' });
+      }
+
+      const patchRes = await fetch(
+        `${SUPABASE_URL}/auth/v1/admin/users/${userId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'apikey':        SERVICE_KEY,
+            'Authorization': `Bearer ${SERVICE_KEY}`,
+            'Content-Type':  'application/json',
+          },
+          body: JSON.stringify({ user_metadata: { role } }),
+        }
+      );
+      if (!patchRes.ok) {
+        const detail = await patchRes.text();
+        return res.status(500).json({ error: '권한 변경 실패', detail });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
     // 회원 삭제 (DELETE)
     if (req.method === 'DELETE') {
       const { userId } = req.body || {};

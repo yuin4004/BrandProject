@@ -218,6 +218,27 @@
     }
     .btn-delete:hover { color: #ff6666; border-color: rgba(255,68,68,0.5); }
 
+    /* 권한 배지 */
+    .badge-role {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px; border: 1px solid;
+    }
+    .badge-role.user        { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.1); }
+    .badge-role.admin       { background: rgba(59,130,246,0.1);   color: #93c5fd;             border-color: rgba(59,130,246,0.3); }
+    .badge-role.super_admin { background: rgba(204,255,0,0.1);    color: var(--neon);         border-color: rgba(204,255,0,0.3); }
+
+    /* 권한 변경 셀렉트 */
+    .role-select {
+      font-size: 11px; font-family: inherit;
+      background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;
+      padding: 4px 8px; cursor: pointer; margin-right: 6px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .role-select:hover  { border-color: rgba(204,255,0,0.3); }
+    .role-select:focus  { outline: none; border-color: var(--neon); }
+    .role-select option { background: #16161f; color: #fff; }
+
     .empty-state { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.25); font-size: 14px; }
     .loading     { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.25); font-size: 14px; }
   </style>
@@ -336,6 +357,7 @@
               <tr>
                 <th>#</th>
                 <th>이메일</th>
+                <th>권한</th>
                 <th>이메일 인증</th>
                 <th>가입일시</th>
                 <th>마지막 로그인</th>
@@ -343,7 +365,7 @@
               </tr>
             </thead>
             <tbody id="member-body">
-              <tr><td colspan="6" class="loading">불러오는 중...</td></tr>
+              <tr><td colspan="7" class="loading">불러오는 중...</td></tr>
             </tbody>
           </table>
         </div>
@@ -467,17 +489,24 @@
       }).join('');
     }
 
+    // ── 권한 라벨 매핑 ──
+    const ROLE_LABEL = {
+      user:        '일반사용자',
+      admin:       '일반관리자',
+      super_admin: '최고관리자',
+    };
+
     // ── 회원 목록 ──
     async function loadMembers() {
       document.getElementById('member-body').innerHTML =
-        '<tr><td colspan="6" class="loading">불러오는 중...</td></tr>';
+        '<tr><td colspan="7" class="loading">불러오는 중...</td></tr>';
 
       const res = await fetch('/api/admin-users', {
         headers: { 'x-admin-password': adminPassword }
       });
       if (!res.ok) {
         document.getElementById('member-body').innerHTML =
-          '<tr><td colspan="6" class="empty-state">데이터를 불러오지 못했습니다.</td></tr>';
+          '<tr><td colspan="7" class="empty-state">데이터를 불러오지 못했습니다.</td></tr>';
         return;
       }
       renderMembers(await res.json());
@@ -498,7 +527,7 @@
 
       if (total === 0) {
         document.getElementById('member-body').innerHTML =
-          '<tr><td colspan="6" class="empty-state">가입한 회원이 없습니다.</td></tr>';
+          '<tr><td colspan="7" class="empty-state">가입한 회원이 없습니다.</td></tr>';
         return;
       }
 
@@ -518,18 +547,53 @@
           ? '<span class="badge-confirmed">인증 완료</span>'
           : '<span class="badge-unconfirmed">미인증</span>';
 
+        const role = (u.user_metadata && u.user_metadata.role) || 'user';
+        const roleBadge = `<span class="badge-role ${role}">${ROLE_LABEL[role] || '일반사용자'}</span>`;
+        const roleSelect = `
+          <select class="role-select" onchange="changeRole('${u.id}', '${u.email}', this.value, '${role}')">
+            <option value="user"        ${role === 'user'        ? 'selected' : ''}>일반사용자</option>
+            <option value="admin"       ${role === 'admin'       ? 'selected' : ''}>일반관리자</option>
+            <option value="super_admin" ${role === 'super_admin' ? 'selected' : ''}>최고관리자</option>
+          </select>`;
+
         return `
           <tr>
             <td class="text-muted">${total - i}</td>
             <td style="font-weight:700;color:#fff;">${u.email || '—'}</td>
+            <td>${roleBadge}</td>
             <td>${emailBadge}</td>
             <td class="text-muted">${createdAt}</td>
             <td class="text-muted">${lastSignIn}</td>
             <td>
+              ${roleSelect}
               <button class="btn-delete" onclick="deleteUser('${u.id}', '${u.email}')">삭제</button>
             </td>
           </tr>`;
       }).join('');
+    }
+
+    // ── 권한 변경 ──
+    async function changeRole(userId, email, newRole, oldRole) {
+      if (!confirm(`"${email}" 계정의 권한을 "${ROLE_LABEL[newRole]}"(으)로 변경하시겠습니까?`)) {
+        loadMembers();
+        return;
+      }
+
+      const res = await fetch('/api/admin-users', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type':     'application/json',
+          'x-admin-password': adminPassword,
+        },
+        body: JSON.stringify({ userId, role: newRole }),
+      });
+
+      if (res.ok) {
+        loadMembers();
+      } else {
+        alert('권한 변경에 실패했습니다. 다시 시도해주세요.');
+        loadMembers();
+      }
     }
 
     // ── 회원 삭제 ──
