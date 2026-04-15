@@ -70,9 +70,30 @@
       gap: 32px;
       align-items: start;
     }
+    /* 데스크톱: 주문요약을 왼쪽(1열), 폼을 오른쪽(2열)에 배치 */
+    .page > .order-summary { grid-column: 1; grid-row: 1; }
+    .page > .form-card     { grid-column: 2; grid-row: 1; }
+
     @media (max-width: 700px) {
-      .page { grid-template-columns: 1fr; padding: 32px 20px 64px; }
-      .order-summary { order: -1; }
+      .page {
+        display: block;
+        padding: 24px 16px 64px;
+      }
+      .page > .form-card,
+      .page > .order-summary {
+        display: block;
+        width: 100%;
+        margin: 0 0 20px 0;
+      }
+      .order-summary {
+        position: static;
+        top: auto;
+        padding: 24px 22px;
+        border-radius: 16px;
+      }
+      .summary-product { font-size: 16px; margin-bottom: 16px; }
+      .summary-price { font-size: 36px; }
+      .form-card { padding: 28px 22px; }
     }
 
     /* ── 주문 요약 (왼쪽) ── */
@@ -81,8 +102,6 @@
       border-radius: 20px;
       padding: 36px 32px;
       color: var(--white);
-      position: sticky;
-      top: 24px;
     }
     .summary-label {
       font-size: 11px;
@@ -455,28 +474,7 @@
   <!-- 본문 -->
   <div class="page">
 
-    <!-- 왼쪽: 주문 요약 -->
-    <div class="order-summary">
-      <div class="summary-label">주문 요약</div>
-      <div class="summary-product">첫 런칭과 콘텐츠 구축을 위한<br>30일 챌린지</div>
-      <div class="summary-price">19,900</div>
-      <div class="summary-price-note">원 · 단 한 번 결제 · 평생 소장</div>
-
-      <hr class="summary-divider">
-      <div class="summary-item-label">포함 내용</div>
-      <div class="summary-line">30일 챌린지 전체 커리큘럼</div>
-      <div class="summary-line">실전 템플릿 &amp; 워크시트 패키지</div>
-      <div class="summary-line">콘텐츠 아이디어 뱅크 시트</div>
-      <div class="summary-line">첫 유료 상품 기획 워크북</div>
-      <div class="summary-line">첫 런칭 실행 체크리스트</div>
-
-      <div class="summary-guarantee">
-        <span class="summary-guarantee-icon">🛡️</span>
-        <span>7일 무조건 환불 보장 — 이유 묻지 않음</span>
-      </div>
-    </div>
-
-    <!-- 오른쪽: 신청 폼 -->
+    <!-- 신청 폼 (모바일 우선 표시) -->
     <div class="form-card">
 
       <!-- 기본 화면 -->
@@ -595,6 +593,27 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- 주문 요약 (데스크톱 왼쪽 / 모바일 아래) -->
+    <div class="order-summary">
+      <div class="summary-label">주문 요약</div>
+      <div class="summary-product">첫 런칭과 콘텐츠 구축을 위한<br>30일 챌린지</div>
+      <div class="summary-price">19,900</div>
+      <div class="summary-price-note">원 · 단 한 번 결제 · 평생 소장</div>
+
+      <hr class="summary-divider">
+      <div class="summary-item-label">포함 내용</div>
+      <div class="summary-line">30일 챌린지 전체 커리큘럼</div>
+      <div class="summary-line">실전 템플릿 &amp; 워크시트 패키지</div>
+      <div class="summary-line">콘텐츠 아이디어 뱅크 시트</div>
+      <div class="summary-line">첫 유료 상품 기획 워크북</div>
+      <div class="summary-line">첫 런칭 실행 체크리스트</div>
+
+      <div class="summary-guarantee">
+        <span class="summary-guarantee-icon">🛡️</span>
+        <span>7일 무조건 환불 보장 — 이유 묻지 않음</span>
+      </div>
     </div>
   </div>
 
